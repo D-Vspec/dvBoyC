@@ -1,9 +1,10 @@
-#include "memory.h"
+#include "gameboy.h"
 #include <stdio.h>
 
 int main(){
-  Memory mem;
-  memory_init(&mem);
+  GameBoy gb;
+  gameboy_init(&gb);
 
-  printf("Hello World\n");
+
+  return 0;
 }

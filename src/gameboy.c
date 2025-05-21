@@ -15,6 +15,7 @@ void gameboy_init(GameBoy* gb) {
     cpu_init(&gb->cpu);
     memory_init(&gb->mem);
     init_opcode_table();
+    gb->running = 1;
 }
 
 uint8_t fetch_opcode(GameBoy* gb) {
@@ -51,3 +52,4 @@ void gameboy_run(GameBoy* gb) {
         gb->cpu.cycles = 0;
     }
 }
+ 

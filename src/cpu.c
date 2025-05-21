@@ -33,6 +33,16 @@ void set_hl(CPU* cpu, uint16_t val) {
     cpu->l = val & 0xFF;
 }
 
+void inc_hl(CPU* cpu) {
+    uint16_t value = get_hl(cpu);
+    set_hl(cpu, value + 1);
+}
+
+void dec_hl(CPU* cpu) {
+    uint16_t value = get_hl(cpu);
+    set_hl(cpu, value - 1);
+}
+
 void cpu_init(CPU* cpu) {
     cpu->a = 0x01;
     cpu->f = 0xB0;

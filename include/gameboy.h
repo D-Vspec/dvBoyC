@@ -14,5 +14,6 @@ typedef struct {
 } GameBoy;
 
 void gameboy_init(GameBoy* gb);
+void gameboy_run(GameBoy* gb);
 
 #endif

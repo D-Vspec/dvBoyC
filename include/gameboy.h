@@ -9,6 +9,8 @@
 typedef struct {
     CPU cpu;
     Memory mem;
+
+    uint8_t running;
 } GameBoy;
 
 void gameboy_init(GameBoy* gb);

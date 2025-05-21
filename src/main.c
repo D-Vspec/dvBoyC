@@ -5,6 +5,5 @@ int main(){
   GameBoy gb;
   gameboy_init(&gb);
 
-
   return 0;
 }

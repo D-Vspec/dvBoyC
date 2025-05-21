@@ -4,7 +4,6 @@
 #include "cpu.h"
 #include "memory.h"
 
-// Define function pointer type for instruction handlers
 typedef void (*InstructionHandler)(Memory* mem, CPU* cpu);
 
 // Define opcode structure
@@ -15,13 +14,10 @@ typedef struct {
     const char* mnemonic;       // Human-readable name
 } Opcode;
 
-// Declare the opcode table
 extern Opcode opcode_table[256];
 
-// Initialize the opcode table
 void init_opcode_table(void);
 
-// Opcode handler functions
 void nop(Memory* mem, CPU* cpu);
 void ld_bc_d16(Memory* mem, CPU* cpu);
 void ld_bc_a(Memory* mem, CPU* cpu);
@@ -37,5 +33,6 @@ void dec_bc(Memory* mem, CPU* cpu);
 void inc_c(Memory* mem, CPU* cpu);
 void dec_c(Memory* mem, CPU* cpu);
 void ld_c_d8(Memory* mem, CPU* cpu);
+void rrca(Memory* mem, CPU* cpu);
 
-#endif /* INSTRUCTIONS_H */
+#endif 

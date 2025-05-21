@@ -18,7 +18,7 @@ void pop_hl(Memory* mem, CPU* cpu) {
 }
 
 // 0xE2: LD (C),A
-void ld_c_a(Memory* mem, CPU* cpu) {
+void ld__c_a(Memory* mem, CPU* cpu) {
     write_memory_byte(mem, 0xFF00 + cpu->c, cpu->a);
     cpu->pc++;
 }
@@ -121,7 +121,7 @@ void pop_af(Memory* mem, CPU* cpu) {
 }
 
 // 0xF2: LD A,(C)
-void ld_a_c(Memory* mem, CPU* cpu) {
+void ld_a__c(Memory* mem, CPU* cpu) {
     cpu->a = read_memory_byte(mem, 0xFF00 + cpu->c);
     cpu->pc++;
 }

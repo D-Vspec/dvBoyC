@@ -256,7 +256,7 @@ void rst_18h(Memory*, CPU*);
 
 void ldh_a8_a(Memory* mem, CPU* cpu);
 void pop_hl(Memory* mem, CPU* cpu);
-void ld_c_a(Memory* mem, CPU* cpu);
+void ld__c_a(Memory* mem, CPU* cpu);
 void unused_e3(Memory* mem, CPU* cpu);
 void unused_e4(Memory* mem, CPU* cpu);
 void push_hl(Memory* mem, CPU* cpu);
@@ -269,7 +269,7 @@ void xor_n(Memory* mem, CPU* cpu);
 void rst_28h(Memory* mem, CPU* cpu);
 void ldh_a_a8(Memory* mem, CPU* cpu);
 void pop_af(Memory* mem, CPU* cpu);
-void ld_a_c(Memory* mem, CPU* cpu);
+void ld_a__c(Memory* mem, CPU* cpu);
 void di(Memory* mem, CPU* cpu);
 void push_af(Memory* mem, CPU* cpu);
 void or_n(Memory* mem, CPU* cpu);

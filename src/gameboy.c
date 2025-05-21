@@ -15,6 +15,7 @@ void gameboy_init(GameBoy* gb) {
     cpu_init(&gb->cpu);
     memory_init(&gb->mem);
     init_regular_opcode_table();
+    init_cb_opcode_table();
     gb->running = 1;
 }
 
@@ -23,7 +24,14 @@ uint8_t fetch_opcode(GameBoy* gb) {
 }
 
 void execute_opcode(GameBoy* gb, uint8_t opcode) {
-    Opcode op = opcode_table[opcode];
+    Opcode op;
+    if (opcode == 0xCB) {
+        opcode = read_memory_byte(&gb->mem, gb->cpu.pc + 1);
+        gb->cpu.pc++;
+        op = cb_opcode_table[opcode];
+    } else {
+        op = regular_opcode_table[opcode];
+    }
     op.handler(&gb->mem, &gb->cpu);
     gb->cpu.pc += op.bytes;
     gb->cpu.cycles += op.cycles;

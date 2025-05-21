@@ -13,7 +13,8 @@ typedef struct {
     const char* mnemonic;
 } Opcode;
 
-extern Opcode opcode_table[256];
+extern Opcode regular_opcode_table[256];
+extern Opcode cb_opcode_table[256];
 
 void init_regular_opcode_table(void);
 void init_cb_opcode_table(void);

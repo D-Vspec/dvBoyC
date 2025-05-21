@@ -14,7 +14,7 @@ const int cyclesPerFrame = 4194304 / 60;
 void gameboy_init(GameBoy* gb) {
     cpu_init(&gb->cpu);
     memory_init(&gb->mem);
-    init_opcode_table();
+    init_regular_opcode_table();
     gb->running = 1;
 }
 

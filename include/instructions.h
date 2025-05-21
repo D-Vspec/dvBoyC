@@ -15,7 +15,8 @@ typedef struct {
 
 extern Opcode opcode_table[256];
 
-void init_opcode_table(void);
+void init_regular_opcode_table(void);
+void init_cb_opcode_table(void);
 
 // 0x00 - 0x0F
 void nop(Memory*, CPU*);

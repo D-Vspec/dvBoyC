@@ -1,11 +1,8 @@
 #include "instructions.h"
-#include "flags.h"
-#include "memory.h"
-#include <stdio.h>
 
 Opcode opcode_table[256];
 
-void init_opcode_table(void) {
+void init_regular_opcode_table(void) {
     printf("Initializing opcode table...\n");
     opcode_table[0x00] = (Opcode){ nop, 1, 4, "NOP" };
     opcode_table[0x01] = (Opcode){ ld_bc_d16, 3, 12, "LD BC,d16" };
@@ -201,7 +198,7 @@ void init_opcode_table(void) {
     opcode_table[0xBD] = (Opcode){ cp_l, 1, 4, "CP L" };
     opcode_table[0xBE] = (Opcode){ cp_hl, 1, 8, "CP (HL)" };
     opcode_table[0xBF] = (Opcode){ cp_a, 1, 4, "CP A" };
-    
+
     opcode_table[0xC0] = (Opcode){ ret_nz, 1, 20, "RET NZ" };
     opcode_table[0xC1] = (Opcode){ pop_bc, 1, 12, "POP BC" };
     opcode_table[0xC2] = (Opcode){ jp_nz_nn, 3, 12, "JP NZ,nn" };

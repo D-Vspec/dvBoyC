@@ -12,5 +12,6 @@ uint8_t read_memory_byte(Memory* RAM, uint16_t address);
 void write_memory_byte(Memory* RAM, uint16_t address, uint8_t value);
 uint16_t read_memory_word(Memory* RAM, uint16_t address);
 void write_memory_word(Memory* RAM, uint16_t address, uint16_t value);
+int load_rom(Memory* memory, const char* filename);
 
 #endif /* ifndef MEMORY_H */

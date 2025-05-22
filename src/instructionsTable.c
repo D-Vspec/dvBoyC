@@ -22,6 +22,7 @@ void init_regular_opcode_table(void) {
     regular_opcode_table[0x0D] = (Opcode){ dec_c, 1, 4, "DEC C" };
     regular_opcode_table[0x0E] = (Opcode){ ld_c_d8, 2, 8, "LD C,d8" };
     regular_opcode_table[0x0F] = (Opcode){ rrca, 1, 4, "RRCA" };
+    regular_opcode_table[0x10] = (Opcode){ stop, 3, 12, "LD DE,d16" };
     regular_opcode_table[0x11] = (Opcode){ ld_de_d16, 3, 12, "LD DE,d16" };
     regular_opcode_table[0x12] = (Opcode){ ld_de_a, 1, 8, "LD (DE),A" };
     regular_opcode_table[0x13] = (Opcode){ inc_de, 1, 8, "INC DE" };

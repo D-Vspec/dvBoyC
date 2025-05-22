@@ -13,7 +13,7 @@ typedef struct {
     uint8_t running;
 } GameBoy;
 
-void gameboy_init(GameBoy* gb);
+void gameboy_init(GameBoy* gb, const char* rom_filename);
 void gameboy_run(GameBoy* gb);
 
 #endif

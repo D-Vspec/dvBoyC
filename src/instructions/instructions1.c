@@ -262,3 +262,10 @@ void jr_s8(Memory* mem, CPU* cpu) {
     int8_t offset = (int8_t)read_memory_byte(mem, cpu->pc + 1);
     cpu->pc += offset;
 }
+
+void stop(Memory* mem, CPU* cpu) {
+    // STOP instruction (0x10): Halts CPU and LCD until a button is pressed.
+    // On real hardware, STOP also switches speed if key1 is set, but for most emulators:
+    // cpu->stopped = 1; // You may need to define this flag in your CPU struct if not present.
+    // Optionally, handle speed switch or other STOP-specific behavior here.
+}

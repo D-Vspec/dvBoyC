@@ -10,16 +10,18 @@
 
 const double FRAME_DURATION_MS = 1000.0 / 60.0;
 const int cyclesPerFrame = 4194304 / 60;
+int debug = 0;
 
-void gameboy_init(GameBoy* gb) {
+void gameboy_init(GameBoy* gb, const char* rom_filename) {
     cpu_init(&gb->cpu);
     memory_init(&gb->mem);
+    load_rom(&gb->mem, rom_filename);
     init_regular_opcode_table();
     init_cb_opcode_table();
-    gb->running = 1;
 }
 
 uint8_t fetch_opcode(GameBoy* gb) {
+    printf("PC at: 0x%02X\n", gb->cpu.pc);
     return read_memory_byte(&gb->mem, gb->cpu.pc);
 }
 
@@ -32,12 +34,28 @@ void execute_opcode(GameBoy* gb, uint8_t opcode) {
     } else {
         op = regular_opcode_table[opcode];
     }
+    printf("0x%02X  %s\n", opcode, op.mnemonic);     
+    uint16_t old_pc = gb->cpu.pc;
     op.handler(&gb->mem, &gb->cpu);
-    gb->cpu.pc += op.bytes;
+    
+    if (gb->cpu.pc == old_pc) {
+        gb->cpu.pc += op.bytes;
+    }
+
+    if (old_pc == gb->cpu.pc && op.bytes == 0) {
+        printf("Warning: PC did not advance and instruction length is 0. Possible infinite loop or jump?\n");
+        debug = 1;
+    }
+
     gb->cpu.cycles += op.cycles;
+
+    if (opcode == 0x39) debug = 1;
+    if(debug) usleep(1000000);
 }
 
 void gameboy_run(GameBoy* gb) {
+    
+    printf("Starting gameboy_run...\n");
     int frameCount = 0;
     struct timeval frame_start, current_time;
     struct timeval time_start, time_last_checkpoint, time_fin;
@@ -45,6 +63,7 @@ void gameboy_run(GameBoy* gb) {
     
     gettimeofday(&time_start, NULL);
     gettimeofday(&time_last_checkpoint, NULL);  
+    gb->running = 1;
 
     while (gb->running) {
         gettimeofday(&frame_start, NULL);

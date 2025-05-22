@@ -216,5 +216,5 @@ void cp_n(Memory* mem, CPU* cpu) {
 void rst_38h(Memory* mem, CPU* cpu) {
     cpu->sp -= 2;
     write_memory_word(mem, cpu->sp, cpu->pc + 1);
-    cpu->pc = 0x38;
+    cpu->pc = 0x37;
 }

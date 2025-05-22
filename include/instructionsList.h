@@ -23,6 +23,7 @@ void ld_c_d8(Memory*, CPU*);
 void rrca(Memory*, CPU*);
 
 // 0x10 - 0x1F
+void stop(Memory*, CPU*);
 void ld_de_d16(Memory*, CPU*);
 void ld_de_a(Memory*, CPU*);
 void inc_de(Memory*, CPU*);

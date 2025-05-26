@@ -38,7 +38,6 @@ The emulator is structured around the main Game Boy components:
 - **Timers**: System timing and interrupt handling
 
 ## Resources & References
-This project was built with help from these excellent resources:
 
 ### Technical Documentation
 - [PPU Implementation Guide](https://hacktix.github.io/GBEDG/ppu/#an-introduction) - Comprehensive PPU documentation
@@ -48,13 +47,7 @@ This project was built with help from these excellent resources:
 ### Community Resources
 - [Helpful Reddit comment on timing](https://www.reddit.com/r/EmuDev/comments/1bf3wje/comment/kuy0doa/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button)
 - [Inspirational YouTube video](https://www.youtube.com/watch?v=hy2yY5a1Z-0) - Game Boy emulation overview
+- [Emulator instructions](https://gbdev.io/) - Lot of links to other resources
+- [Technical Help](https://gbdev.io/pandocs/) - Cool guides and shit
+  
 
-## Contributing
-Contributions are welcome! Please feel free to:
-- Report bugs and issues
-- Suggest new features
-- Submit pull requests
-- Improve documentation
-
-## Acknowledgments
-Special thanks to the Game Boy development community and the creators of the resources listed above for making this project possible.

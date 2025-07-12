@@ -1,8 +1,8 @@
 #include "gameboy.h"
 #include "cpu.h"
-#include "flags.h"
 #include "memory.h"
 #include "instructions.h"
+#include "timer.h"
 
 #include <unistd.h>
 #include <sys/time.h>
@@ -70,6 +70,8 @@ void gameboy_run(GameBoy* gb) {
         gb->cpu.cycles = 0;
 
         while (gb->cpu.cycles < cyclesPerFrame) {
+            // Update timer using the Timer struct and IF in Memory
+            timer_update(&gb->mem.timer, 1, &gb->mem.IF, &gb->cpu);
             uint8_t opcode = fetch_opcode(gb);
             execute_opcode(gb, opcode);
         }

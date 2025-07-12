@@ -10,3 +10,6 @@ main
 *.gb 
 *.txt
 roms/
+
+#LSP Stuff
+compile_commands.json

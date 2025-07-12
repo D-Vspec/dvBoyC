@@ -2,9 +2,12 @@
 #define MEMORY_H
 
 #include <stdint.h>
+#include "timer.h" // Add timer.h for Timer struct
 
 typedef struct {
   uint8_t data[0x10000];
+  Timer timer;         // Add Timer struct for hardware timer
+  uint8_t IF;          // Add interrupt flag register
 } Memory;
 
 void memory_init(Memory* RAM);

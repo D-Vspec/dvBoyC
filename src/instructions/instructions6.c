@@ -42,9 +42,7 @@ void call_nz_nn(Memory* mem, CPU* cpu) {
         cpu->sp -= 2;
         write_memory_word(mem, cpu->sp, cpu->pc + 3);
         cpu->pc = addr;
-    } else {
-        cpu->pc += 3;
-    }
+    } 
 }
 
 // 0xC5: PUSH BC

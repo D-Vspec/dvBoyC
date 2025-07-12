@@ -71,7 +71,7 @@ void gameboy_run(GameBoy* gb) {
 
         while (gb->cpu.cycles < cyclesPerFrame) {
             // Update timer using the Timer struct and IF in Memory
-            timer_update(&gb->mem.timer, 1, &gb->mem.IF, &gb->cpu);
+            timer_update(&gb->mem.timer, 1, &gb->mem.IF);
             uint8_t opcode = fetch_opcode(gb);
             execute_opcode(gb, opcode);
         }

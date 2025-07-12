@@ -2,6 +2,7 @@
 #define CPU_H
 
 #include <stdint.h>
+#include "timer.h"
 
 typedef struct {
     uint8_t a;
@@ -18,6 +19,8 @@ typedef struct {
 
     uint8_t ime; 
     int cycles;
+
+    Timer timer; // Timer is now a member of CPU
 } CPU;
 
 uint16_t get_af(CPU* cpu);

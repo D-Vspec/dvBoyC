@@ -20,7 +20,7 @@ static uint16_t timer_frequency(uint8_t tac) {
     }
 }
 
-void timer_update(Timer* timer, uint16_t cycles, uint8_t* interrupt_flag, CPU* cpu) { 
+void timer_update(Timer* timer, uint16_t cycles, uint8_t* interrupt_flag) { 
     timer->div_counter += cycles;
     while (timer->div_counter >= 256) {
         timer->div_counter -= 256;
@@ -35,7 +35,6 @@ void timer_update(Timer* timer, uint16_t cycles, uint8_t* interrupt_flag, CPU* c
             if (timer->tima == 0xFF) {
                 timer->tima = timer->tma;
                 if (interrupt_flag) *interrupt_flag |= 0x04;
-                if (cpu) set_flag(cpu, FLAG_Z); 
             } else {
                 timer->tima++;
             }

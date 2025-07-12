@@ -20,7 +20,8 @@ typedef struct {
     uint8_t ime; 
     int cycles;
 
-    Timer timer; // Timer is now a member of CPU
+    Timer timer;
+    uint8_t IF;          
 } CPU;
 
 uint16_t get_af(CPU* cpu);

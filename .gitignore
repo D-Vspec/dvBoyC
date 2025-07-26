@@ -1,0 +1,15 @@
+# VS code ka kachra
+.vscode/
+
+# compiled files
+obj/
+main.o
+main
+
+# Test Roms and Rom Data
+*.gb 
+*.txt
+roms/
+
+#LSP Stuff
+compile_commands.json

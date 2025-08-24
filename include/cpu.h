@@ -18,10 +18,12 @@ typedef struct {
     uint16_t pc;
 
     uint8_t ime; 
+    uint8_t ime_enable_pending; // counts down for delayed EI (set to 2 on EI; enable when reaches 0)
     int cycles;
 
     Timer timer;
     uint8_t IF;          
+    uint8_t IE;          // Interrupt Enable register (0xFFFF)
 } CPU;
 
 uint16_t get_af(CPU* cpu);

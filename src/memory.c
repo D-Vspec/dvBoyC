@@ -4,8 +4,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-void memory_init(Memory* RAM){
+void memory_init(Memory* RAM, Timer* timer, uint8_t* IF, uint8_t* IE){
   memset(RAM->data, 0, sizeof(RAM->data));
+  RAM->timer = timer;
+  RAM->IF = IF;
+  RAM->IE = IE;
   printf("Initialized empty RAM\n");
 }
 
@@ -48,18 +51,52 @@ int load_rom(Memory* RAM, const char* filename) {
 }
 
 uint8_t read_memory_byte(Memory* RAM, uint16_t address){
+  // Timer registers
+  if (address == 0xFF04) { // DIV upper 8 bits
+    return (uint8_t)((RAM->timer->div >> 8) & 0xFF);
+  } else if (address == 0xFF05) { // TIMA
+    return RAM->timer->tima;
+  } else if (address == 0xFF06) { // TMA
+    return RAM->timer->tma;
+  } else if (address == 0xFF07) { // TAC (lower 3 bits relevant)
+    return RAM->timer->tac | 0xF8; // upper bits always read as 1 on DMG
+  } else if (address == 0xFF0F) { // IF
+    return *(RAM->IF) | 0xE0; // upper 3 bits set
+  } else if (address == 0xFFFF) { // IE
+    return *(RAM->IE) | 0xE0; // upper 3 bits set
+  }
   return RAM->data[address];
 }
 
 void write_memory_byte(Memory* RAM, uint16_t address, uint8_t value){
+  if (address == 0xFF04) { // DIV reset
+    RAM->timer->div = 0; // reset divider
+    RAM->timer->div_counter = 0;
+    return;
+  } else if (address == 0xFF05) { // TIMA
+    RAM->timer->tima = value;
+    return;
+  } else if (address == 0xFF06) { // TMA
+    RAM->timer->tma = value;
+    return;
+  } else if (address == 0xFF07) { // TAC
+    RAM->timer->tac = value & 0x07; // only lower 3 bits
+    return;
+  } else if (address == 0xFF0F) { // IF
+    *(RAM->IF) = value & 0x1F; // only lower 5 bits used
+    return;
+  } else if (address == 0xFFFF) { // IE
+    *(RAM->IE) = value & 0x1F;
+    return;
+  }
   RAM->data[address] = value;
 }
 
 uint16_t read_memory_word(Memory* RAM, uint16_t address){
-    return (uint16_t)RAM->data[address] | ((uint16_t)RAM->data[address + 1] << 8);
+    return (uint16_t)read_memory_byte(RAM, address) | ((uint16_t)read_memory_byte(RAM, address + 1) << 8);
 }
 
 void write_memory_word(Memory* RAM, uint16_t address, uint16_t value){
-    RAM->data[address] = (uint8_t)(value & 0xFF);
-    RAM->data[address + 1] = (uint8_t)((value >> 8) & 0xFF);
+    write_memory_byte(RAM, address, (uint8_t)(value & 0xFF));
+    write_memory_byte(RAM, address + 1, (uint8_t)((value >> 8) & 0xFF));
 }

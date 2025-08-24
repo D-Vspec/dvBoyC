@@ -258,7 +258,7 @@ void init_regular_opcode_table(void) {
     regular_opcode_table[0xF5] = (Opcode){ push_af, 1, 8, "PUSH AF" };
     regular_opcode_table[0xF6] = (Opcode){ or_n, 2, 8, "OR n" };
     regular_opcode_table[0xF7] = (Opcode){ rst_30h, 1, 16, "RST 30h" };
-    // regular_opcode_table[0xF8] = (Opcode){ ld_hl_sp_s8, 2, 12, "LD HL,SP+s8" };
+    regular_opcode_table[0xF8] = (Opcode){ ld_hl_sp_s8, 2, 12, "LD HL,SP+s8" };
     regular_opcode_table[0xF9] = (Opcode){ ld_sp_hl, 1, 4, "LD SP,HL" };
     regular_opcode_table[0xFA] = (Opcode){ ld_a_a16, 3, 16, "LD A,(a16)" };
     regular_opcode_table[0xFB] = (Opcode){ ei, 1, 4, "EI" };

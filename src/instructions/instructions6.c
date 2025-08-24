@@ -223,7 +223,7 @@ void reti(Memory* mem, CPU* cpu) {
     uint16_t addr = read_memory_word(mem, cpu->sp);
     cpu->sp += 2;
     cpu->pc = addr;
-    // Set IME (interrupt master enable) here if needed
+    cpu->ime = 1; 
 }
 
 // 0xDA: JP C,nn

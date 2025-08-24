@@ -128,8 +128,8 @@ void ld_a__c(Memory* mem, CPU* cpu) {
 
 // 0xF3: DI
 void di(Memory* mem, CPU* cpu) {
-    // Disable interrupts (IME = 0)
     cpu->ime = 0;
+    cpu->ime_enable_pending = 0; // cancel any pending enable
     cpu->pc++;
 }
 
@@ -190,8 +190,10 @@ void ld_a_a16(Memory* mem, CPU* cpu) {
 
 // 0xFB: EI
 void ei(Memory* mem, CPU* cpu) {
-    // Enable interrupts (IME = 1)
-    cpu->ime = 1;
+    // EI effect delayed: after next instruction
+    if (cpu->ime_enable_pending == 0) {
+        cpu->ime_enable_pending = 2; // decrement before executing next inst then after that enable
+    }
     cpu->pc++;
 }
 

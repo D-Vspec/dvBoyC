@@ -44,6 +44,12 @@ void cpu_init(CPU* cpu) {
     cpu->l = 0x4D;
     cpu->sp = 0xFFFE;
     cpu->pc = 0x0100;
+    cpu->ime = 0; 
+    cpu->ime_enable_pending = 0;
+    cpu->cycles = 0;
+    cpu->IF = 0;
+    cpu->IE = 0;
+    timer_init(&cpu->timer);
 
     printf("CPU initialized\n");
 }

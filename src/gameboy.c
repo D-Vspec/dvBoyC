@@ -10,22 +10,49 @@
 
 const double FRAME_DURATION_MS = 1000.0 / 60.0;
 const int cyclesPerFrame = 4194304 / 60;
-int debug = 0;
+int debug = 1;
 
 void gameboy_init(GameBoy* gb, const char* rom_filename) {
     cpu_init(&gb->cpu);
-    memory_init(&gb->mem);
+    memory_init(&gb->mem, &gb->cpu.timer, &gb->cpu.IF, &gb->cpu.IE);
     load_rom(&gb->mem, rom_filename);
     init_regular_opcode_table();
     init_cb_opcode_table();
 }
 
 uint8_t fetch_opcode(GameBoy* gb) {
-    printf("PC at: 0x%02X\n", gb->cpu.pc);
+    if(debug) printf("PC at: 0x%04X\n", gb->cpu.pc);
     return read_memory_byte(&gb->mem, gb->cpu.pc);
 }
 
-void execute_opcode(GameBoy* gb, uint8_t opcode) {
+static void service_interrupt(GameBoy* gb, uint16_t vector, uint8_t bit_mask) {
+    gb->cpu.ime = 0; // disable IME
+    gb->cpu.IF &= ~bit_mask; // acknowledge interrupt
+    gb->cpu.sp -= 2;
+    write_memory_word(&gb->mem, gb->cpu.sp, gb->cpu.pc);
+    gb->cpu.pc = vector;
+    gb->cpu.cycles += 20; 
+}
+
+static void handle_interrupts(GameBoy* gb) {
+    CPU* cpu = &gb->cpu;
+    if (cpu->ime == 0) return;
+    uint8_t pending = cpu->IF & cpu->IE & 0x1F;
+    if (!pending) return;
+    if (pending & 0x01) { // VBlank
+        service_interrupt(gb, 0x40, 0x01);
+    } else if (pending & 0x02) { // LCD STAT
+        service_interrupt(gb, 0x48, 0x02);
+    } else if (pending & 0x04) { // Timer
+        service_interrupt(gb, 0x50, 0x04);
+    } else if (pending & 0x08) { // Serial
+        service_interrupt(gb, 0x58, 0x08);
+    } else if (pending & 0x10) { // Joypad
+        service_interrupt(gb, 0x60, 0x10);
+    }
+}
+
+static int execute_and_get_cycles(GameBoy* gb, uint8_t opcode) {
     Opcode op;
     if (opcode == 0xCB) {
         opcode = read_memory_byte(&gb->mem, gb->cpu.pc + 1);
@@ -34,10 +61,11 @@ void execute_opcode(GameBoy* gb, uint8_t opcode) {
     } else {
         op = regular_opcode_table[opcode];
     }
-    printf("0x%02X  %s\n", opcode, op.mnemonic);     
+    
+    if(debug) printf("0x%02X  %s\n", opcode, op.mnemonic);
     uint16_t old_pc = gb->cpu.pc;
     op.handler(&gb->mem, &gb->cpu);
-    
+
     if (gb->cpu.pc == old_pc) {
         gb->cpu.pc += op.bytes;
     }
@@ -47,33 +75,46 @@ void execute_opcode(GameBoy* gb, uint8_t opcode) {
         debug = 1;
     }
 
-    gb->cpu.cycles += op.cycles;
-
-    if (opcode == 0x39) debug = 1;
-    if(debug) usleep(1000000);
+    return op.cycles;
 }
 
 void gameboy_run(GameBoy* gb) {
-    
     printf("Starting gameboy_run...\n");
+
     int frameCount = 0;
+    
     struct timeval frame_start, current_time;
     struct timeval time_start, time_last_checkpoint, time_fin;
+    
     long frame_time_us;
+
+    if(debug) printf("Calculating timing parameters...\n");
     
     gettimeofday(&time_start, NULL);
     gettimeofday(&time_last_checkpoint, NULL);  
     gb->running = 1;
 
+    if(debug) printf("Entering main emulation loop...\n");
+
     while (gb->running) {
         gettimeofday(&frame_start, NULL);
-        gb->cpu.cycles = 0;
+        int frameCycles = 0;
 
-        while (gb->cpu.cycles < cyclesPerFrame) {
-            // Update timer using the Timer struct and IF in Memory
-            timer_update(&gb->cpu.timer, 1, &gb->cpu.IF);
+        if(debug) printf("Starting new frame %d\n", frameCount + 1);
+
+        while (frameCycles < cyclesPerFrame) {
+            // Apply delayed EI enable (EI sets ime_enable_pending=2; after next instruction executed IME=1)
+            if (gb->cpu.ime_enable_pending) {
+                gb->cpu.ime_enable_pending--;
+                if (gb->cpu.ime_enable_pending == 0) {
+                    gb->cpu.ime = 1;
+                }
+            }
+            handle_interrupts(gb);
             uint8_t opcode = fetch_opcode(gb);
-            execute_opcode(gb, opcode);
+            int opCycles = execute_and_get_cycles(gb, opcode);
+            timer_update(&gb->cpu.timer, opCycles, &gb->cpu.IF);
+            frameCycles += opCycles;
         }
 
         frameCount++;
@@ -81,13 +122,12 @@ void gameboy_run(GameBoy* gb) {
         gettimeofday(&current_time, NULL);
         frame_time_us = (current_time.tv_sec - frame_start.tv_sec) * 1000000 + (current_time.tv_usec - frame_start.tv_usec);
 
-        // long target_frame_time_us = 16600;
         long target_frame_time_us = FRAME_DURATION_MS * 1000; 
 
         if (frame_time_us < target_frame_time_us) {
             usleep(target_frame_time_us - frame_time_us);
-        } else {
-            printf("wtf happened here? frame time: %ld us\n", frame_time_us);
+        } else if(debug) {
+            printf("Frame over time: %ld us\n", frame_time_us);
         }
 
         if (frameCount % 60 == 0) {
